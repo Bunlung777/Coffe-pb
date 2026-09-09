@@ -1,6 +1,6 @@
 # Deploy — Coffee Cost Report
 
-URL ปลายทาง: **https://www.cpr-one.com/coffee-cost-report**
+URL ปลายทาง: **https://www-dev.cpr-one.com/coffee-cost-report**
 
 > vhost เดิม redirect `cpr-one.com` → `www.cpr-one.com` อยู่แล้ว
 > ดังนั้นเข้าที่ `cpr-one.com/coffee-cost-report` ก็จะเด้งไป `www.` ให้เอง
@@ -13,7 +13,7 @@ URL ปลายทาง: **https://www.cpr-one.com/coffee-cost-report**
 **ข้อดีของการใช้ sub-path:** ไม่ต้องแตะ DNS, ไม่ต้องแตะ ALB, ไม่ต้องขอ cert ใหม่
 
 ```
-Browser → https://www.cpr-one.com/coffee-cost-report
+Browser → https://www-dev.cpr-one.com/coffee-cost-report
              │
              ▼
         Apache :443  (vhost cpr-one.com เดิม)
@@ -172,7 +172,7 @@ sudo systemctl reload apache2
 ## 6. ทดสอบ
 
 ```bash
-curl -I https://www.cpr-one.com/coffee-cost-report
+curl -I https://www-dev.cpr-one.com/coffee-cost-report
 ```
 
 แล้วเปิดในเบราว์เซอร์ ตรวจ 3 อย่าง:
@@ -182,8 +182,8 @@ curl -I https://www.cpr-one.com/coffee-cost-report
 
 ตรวจว่าแอปย่อยเดิมยังปกติด้วย:
 ```bash
-curl -I https://www.cpr-one.com/capex/api
-curl -I https://www.cpr-one.com/technician_pm/ui
+curl -I https://www-dev.cpr-one.com/capex/api
+curl -I https://www-dev.cpr-one.com/technician_pm/ui
 ```
 
 ---

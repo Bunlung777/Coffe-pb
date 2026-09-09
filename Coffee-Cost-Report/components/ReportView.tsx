@@ -41,9 +41,9 @@ export default function ReportView({
   const [settlementRuleOpen, setSettlementRuleOpen] = useState(false);
   const [stdManagerOpen, setStdManagerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-  // const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  // const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const unitWeightSaveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const availableMonths = useMemo(() => {
@@ -103,31 +103,31 @@ export default function ReportView({
   };
   const hasAnyData = batch !== null;
 
-  // async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
-  //   e.preventDefault();
-  //   const file = fileInputRef.current?.files?.[0];
-  //   if (!file) return;
+  async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) return;
 
-  //   setUploading(true);
-  //   setUploadError(null);
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     const res = await fetch(apiUrl("/api/upload"), { method: "POST", body: formData });
-  //     const data = await res.json();
-  //     if (!res.ok) {
-  //       setUploadError(data.error ?? "อัปโหลดไม่สำเร็จ");
-  //       return;
-  //     }
-  //     // Full reload so the server component re-reads the new upload from disk
-  //     // and this component gets the raw rows again (needed for client-side recompute).
-  //     window.location.reload();
-  //   } catch {
-  //     setUploadError("เกิดข้อผิดพลาดระหว่างอัปโหลด");
-  //   } finally {
-  //     setUploading(false);
-  //   }
-  // }
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(apiUrl("/api/upload"), { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadError(data.error ?? "อัปโหลดไม่สำเร็จ");
+        return;
+      }
+      // Full reload so the server component re-reads the new upload from disk
+      // and this component gets the raw rows again (needed for client-side recompute).
+      window.location.reload();
+    } catch {
+      setUploadError("เกิดข้อผิดพลาดระหว่างอัปโหลด");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   function handleStdEntryAdd(material: string, from: string, value: number) {
     setStdMaster((prev) => {
@@ -206,8 +206,8 @@ export default function ReportView({
       </header> */}
 
       <section className="mb-6 pl-0 pr-3 px-5">
-        {/* <h2 className="mb-3 text-sm font-semibold text-text">อัปโหลดข้อมูล MB51</h2> */}
-        {/* <form onSubmit={handleUpload} className="flex flex-wrap items-center gap-3">
+        <h2 className="mb-3 text-sm font-semibold text-text">อัปโหลดข้อมูล MB51</h2>
+        <form onSubmit={handleUpload} className="flex flex-wrap items-center gap-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -228,12 +228,12 @@ export default function ReportView({
               {new Date(batch.uploadedAt).toLocaleString("th-TH")} · {batch.rows.length.toLocaleString("th-TH")} แถว
             </span>
           )}
-        </form> */}
+        </form>
         {uploadError && <p className="mt-2 text-sm text-down">{uploadError}</p>}
-        {/* <p className="mt-2 text-xs text-text-muted">
+        <p className="mt-2 text-xs text-text-muted">
           ต้องมี sheet ที่ชื่อขึ้นต้นด้วย &quot;MB51&quot; (เช่น &quot;MB51 328&quot;, &quot;MB51 M. 1-7&quot;) พร้อมคอลัมน์ Material,
           Material description, Order, EUn, Quantity in UnE, Amt.in Loc.Cur., Pstng Date
-        </p> */}
+        </p>
 
         {batch && availableMonths.length > 0 && (
           <div className="flex flex-wrap items-center justify-between gap-3 ">

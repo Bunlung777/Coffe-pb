@@ -26,4 +26,4 @@ sudo systemctl restart coffee-cost-report
 sleep 3
 sudo systemctl status coffee-cost-report --no-pager --lines=10
 
-echo "==> Done: https://www.cpr-one.com/coffee-cost-report"
+echo "==> Done: https://www-dev.cpr-one.com/coffee-cost-report"
