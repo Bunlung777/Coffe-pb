@@ -22,7 +22,7 @@ Browser → https://www.cpr-one.com/coffee-cost-report
         Node.js 127.0.0.1:3001   (systemd: coffee-cost-report)
              │
              ▼
-        /var/www/apps/coffee-cost-report/data/*.json
+        /var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report/data/*.json
 ```
 
 ---
@@ -60,18 +60,25 @@ node -v && npm -v
 
 ---
 
-## 2. วางโค้ดบน server
+## 2. ตำแหน่งโค้ดบน server
 
-วางไว้ **นอก** `/var/www/html` เพราะ Apache ไม่ได้เสิร์ฟไฟล์ของแอปนี้โดยตรง
-(ทุก request ถูก proxy ไป Node) การวางไว้นอก DocumentRoot ทำให้ไม่ต้อง
-เขียน `Require all denied` กัน source แบบที่ทำกับ `/capex/api`
+```
+/var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report
+```
+
+โค้ดอยู่ **ใน** `/var/www/html` (DocumentRoot) เหมือนแอปย่อยตัวอื่น
+Apache ไม่ได้เสิร์ฟไฟล์ในโฟลเดอร์นี้โดยตรง เพราะ `ProxyPass` รับ request
+ทุกตัวใต้ `/coffee-cost-report` ไปให้ Node ก่อนเสมอ
+
+แต่เพื่อกันพลาด `apache-snippet.conf` ใส่ `Require all denied` ครอบโฟลเดอร์นี้ไว้
+— หลักการเดียวกับที่ vhost ทำกับ `/capex/api` และ `/test-cprweb/web` อยู่แล้ว
+ถ้าวันหลังมีใครแก้หรือถอด ProxyPass ออก จะได้ 403 แทนที่จะโชว์ source กับ `.git`
+
+**สิทธิ์ไฟล์** — service รันด้วย user `ubuntu` ถ้า clone มาด้วย `root`
+ต้องโอนสิทธิ์ก่อน ไม่งั้น service จะ start ไม่ขึ้น:
 
 ```bash
-sudo mkdir -p /var/www/apps
-sudo chown ubuntu:ubuntu /var/www/apps
-cd /var/www/apps
-git clone <URL-ของ-repo> coffee-cost-report
-cd coffee-cost-report
+sudo chown -R ubuntu:ubuntu /var/www/html/coffee-cost-report
 ```
 
 Build ครั้งแรก:
@@ -91,8 +98,8 @@ npm run build
 ค่า STD master และ unit-weight master
 
 ```bash
-mkdir -p /var/www/apps/coffee-cost-report/data
-chown ubuntu:ubuntu /var/www/apps/coffee-cost-report/data
+mkdir -p /var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report/data
+chown ubuntu:ubuntu /var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report/data
 ```
 
 - อยู่ใน `.gitignore` แล้ว → `git pull` ไม่ทับ
@@ -101,7 +108,7 @@ chown ubuntu:ubuntu /var/www/apps/coffee-cost-report/data
 
 Backup (ใส่ cron รายวันได้):
 ```bash
-tar czf ~/coffee-data-$(date +%F).tar.gz -C /var/www/apps/coffee-cost-report data
+tar czf ~/coffee-data-$(date +%F).tar.gz -C /var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report data
 ```
 
 ---
@@ -109,7 +116,7 @@ tar czf ~/coffee-data-$(date +%F).tar.gz -C /var/www/apps/coffee-cost-report dat
 ## 4. ตั้ง systemd service
 
 ```bash
-sudo cp /var/www/apps/coffee-cost-report/deploy/coffee-cost-report.service \
+sudo cp /var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report/deploy/coffee-cost-report.service \
         /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now coffee-cost-report
@@ -184,7 +191,7 @@ curl -I https://www.cpr-one.com/technician_pm/ui
 ## 7. อัปเดตรอบถัดไป
 
 ```bash
-/var/www/apps/coffee-cost-report/deploy/update.sh
+/var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report/deploy/update.sh
 ```
 
 `git pull` → `npm ci` → `npm run build` → `systemctl restart` โดยไม่แตะ `data/`

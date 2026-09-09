@@ -13,7 +13,7 @@ Type=simple
 User=ubuntu
 Group=ubuntu
 
-WorkingDirectory=/var/www/apps/coffee-cost-report
+WorkingDirectory=/var/www/html/coffee-cost-report/Coffe-pb/Coffee-Cost-Report
 
 # PORT is read by `next start`. 3001 chosen to avoid 8080 (phpMyAdmin).
 Environment=NODE_ENV=production
