@@ -8,6 +8,7 @@ import { computeOrder305Report } from "@/lib/pivot305";
 import { computeSettlementRuleReport } from "@/lib/settlementRuleReport";
 import { computeMonthly301Summary } from "@/lib/monthly301Summary";
 import { formatMonthLabel, monthKeyOf } from "@/lib/dates";
+import { apiUrl } from "@/lib/basePath";
 import { STAGE_LABELS, STAGE_PREFIXES } from "@/lib/types";
 import type { StagePrefix, StdMaster, UnitWeightMaster, UploadBatch } from "@/lib/types";
 import Stage301Table from "./Stage301Table";
@@ -112,7 +113,7 @@ export default function ReportView({
   //   try {
   //     const formData = new FormData();
   //     formData.append("file", file);
-  //     const res = await fetch("/api/upload", { method: "POST", body: formData });
+  //     const res = await fetch(apiUrl("/api/upload"), { method: "POST", body: formData });
   //     const data = await res.json();
   //     if (!res.ok) {
   //       setUploadError(data.error ?? "อัปโหลดไม่สำเร็จ");
@@ -135,7 +136,7 @@ export default function ReportView({
       return { ...prev, [material]: [...withoutSameMonth, { from, value }].sort((a, b) => a.from.localeCompare(b.from)) };
     });
 
-    fetch("/api/std", {
+    fetch(apiUrl("/api/std"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ material, from, value }),
@@ -145,7 +146,7 @@ export default function ReportView({
   function handleStdEntryDelete(material: string, from: string) {
     setStdMaster((prev) => ({ ...prev, [material]: (prev[material] ?? []).filter((e) => e.from !== from) }));
 
-    fetch("/api/std", {
+    fetch(apiUrl("/api/std"), {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ material, from }),
@@ -160,7 +161,7 @@ export default function ReportView({
 
     if (unitWeightSaveTimers.current[material]) clearTimeout(unitWeightSaveTimers.current[material]);
     unitWeightSaveTimers.current[material] = setTimeout(() => {
-      fetch("/api/unit-weight", {
+      fetch(apiUrl("/api/unit-weight"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ material, grams: parsed }),
@@ -357,7 +358,7 @@ export default function ReportView({
                   </button>
                 </div>
                 <a
-                  href={`/api/export?stage=${activeStage}&from=${monthFrom}&to=${monthTo}`}
+                  href={apiUrl(`/api/export?stage=${activeStage}&from=${monthFrom}&to=${monthTo}`)}
                   className="inline-flex items-center gap-1 rounded-full bg-green-700 px-4 py-1 text-sm font-medium text-white hover:bg-green-800"
                 >
                   <FontAwesomeIcon icon={faFileExcel} />

@@ -1,0 +1,15 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next
+/out
+
+# runtime data (uploaded MB51 + masters — must NOT be committed or wiped on deploy)
+/data
+
+# misc
+.DS_Store
+*.pem
+.env*.local
+next-env.d.ts

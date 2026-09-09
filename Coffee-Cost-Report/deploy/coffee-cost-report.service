@@ -1,0 +1,33 @@
+# systemd unit for the Coffee Cost Report Next.js app.
+# Install to: /etc/systemd/system/coffee-cost-report.service
+#
+# The app is a Node server (it has API routes + writes data/*.json), so it
+# cannot be served as static files by Apache. Apache reverse-proxies to it.
+
+[Unit]
+Description=Coffee Cost Report (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+
+WorkingDirectory=/var/www/apps/coffee-cost-report
+
+# PORT is read by `next start`. 3001 chosen to avoid 8080 (phpMyAdmin).
+Environment=NODE_ENV=production
+Environment=PORT=3001
+Environment=HOSTNAME=127.0.0.1
+
+ExecStart=/usr/bin/npm run start
+
+Restart=always
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=coffee-cost-report
+
+[Install]
+WantedBy=multi-user.target
